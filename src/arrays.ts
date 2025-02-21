@@ -56,7 +56,10 @@ export const removeDollars = (amounts: string[]): number[] => {
  * in question marks ("?").
  */
 export const shoutIfExclaiming = (messages: string[]): string[] => {
-    return [];
+    const noQuestions = messages.filter((message: string): boolean => !message.includes("?"));
+    const newList = noQuestions.map(
+        (message: string): string => message.includes("!") ? message.toUpperCase() : message);
+    return newList;
 };
 
 /**
@@ -64,7 +67,8 @@ export const shoutIfExclaiming = (messages: string[]): string[] => {
  * 4 letters long.
  */
 export function countShortWords(words: string[]): number {
-    return 0;
+    const shortWords = words.filter((word: string): boolean => word.length < 4);
+    return shortWords.length;
 }
 
 /**
@@ -73,7 +77,13 @@ export function countShortWords(words: string[]): number {
  * then return true.
  */
 export function allRGB(colors: string[]): boolean {
-    return false;
+    if (colors.length === 0){
+        return true;
+    }
+    const reds = colors.filter((color: string): boolean => color.toUpperCase() === "RED");
+    const greens = colors.filter((color: string): boolean => color.toUpperCase() === "GREEN");
+    const blues = colors.filter((color: string): boolean => color.toUpperCase() === "BLUE");
+    return (reds.length + greens.length + blues.length) === colors.length;
 }
 
 /**
@@ -84,7 +94,13 @@ export function allRGB(colors: string[]): boolean {
  * And the array [] would become "0=0".
  */
 export function makeMath(addends: number[]): string {
-    return "";
+    if (addends.length === 0) {
+        return "0=0";
+    }
+    const sum = addends.reduce((currTotal: number, num: number) => currTotal+num, 0);
+    const strNums = addends.map((num: number) => num.toString());
+    const totalStrNums = strNums.join("+")
+    return sum.toString() + "=" + totalStrNums;
 }
 
 /**
@@ -97,5 +113,16 @@ export function makeMath(addends: number[]): string {
  * And the array [1, 9, 7] would become [1, 9, 7, 17]
  */
 export function injectPositive(values: number[]): number[] {
-    return [];
+    const firstNeg = values.findIndex((num: number): boolean => num < 0);
+    const index = firstNeg === -1 ? values.length : firstNeg + 1;
+    const numsBefore =
+        firstNeg === -1 ?
+            [...values.slice(0, index)]
+        :   [...values.slice(0, index-1)];
+    const sumBefore = numsBefore.reduce((currTot: number, num: number) => currTot+num, 0)
+    const newArr: number[] =
+        firstNeg === -1 ?
+            [...values, sumBefore]
+        :   [...numsBefore, values[firstNeg], sumBefore, ...values.slice(index)];
+    return newArr;
 }
